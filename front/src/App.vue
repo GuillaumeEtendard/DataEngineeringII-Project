@@ -1,15 +1,16 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <h1>Data Engineering Project</h1>
+  <p>developed by Guillaume Etendard, Camille Omnes and Tom Tea</p>
+  <Sentiment />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Sentiment from './components/Sentiment.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Sentiment
   }
 }
 
