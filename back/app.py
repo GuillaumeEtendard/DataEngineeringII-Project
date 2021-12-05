@@ -8,7 +8,7 @@ app = FastAPI()
 # NEW
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -21,7 +21,7 @@ class Item(BaseModel):
 
 @app.get("/")
 def read_root():
-    return {"Hello":"World"}
+    return {"message":"Hello World"}
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q : Optional[str]=None):

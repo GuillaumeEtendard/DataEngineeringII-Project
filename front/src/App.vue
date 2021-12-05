@@ -13,9 +13,6 @@ export default {
     Sentiment
   }
 }
-
-const data = fetch('http://localhost:8000/').then(resp => resp.json()).then(data => data.Hello);
-console.log(data)
 </script>
 
 <style>
