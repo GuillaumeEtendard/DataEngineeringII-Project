@@ -1,5 +1,4 @@
 from transformers import AutoModelForSequenceClassification
-from transformers import TFAutoModelForSequenceClassification
 from transformers import AutoTokenizer
 import numpy as np
 from scipy.special import softmax
@@ -7,6 +6,7 @@ import csv
 import urllib.request
 import tensorflow as tf
 tf.config.experimental.list_physical_devices('GPU')
+
 
 def preprocess(text):
     """
@@ -19,13 +19,15 @@ def preprocess(text):
         new_text.append(t)
     return " ".join(new_text)
 
+
 def model():
     """
     Loading the pre-trained model
     """
+    task='sentiment'
     MODEL = f"cardiffnlp/twitter-roberta-base-{'sentiment'}"
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
-    labels=[]
+    labels = []
     mapping_link = f"https://raw.githubusercontent.com/cardiffnlp/tweeteval/main/datasets/{task}/mapping.txt"
     with urllib.request.urlopen(mapping_link) as f:
         html = f.read().decode('utf-8').split("\n")
@@ -33,9 +35,10 @@ def model():
     labels = [row[1] for row in csvreader if len(row) > 1]
     model = AutoModelForSequenceClassification.from_pretrained(MODEL)
     model.save_pretrained(MODEL)
-    return model,tokenizer
+    return model, tokenizer, labels
 
-def prediction(model,text,tokenizer):
+
+def prediction(model, text, tokenizer, labels):
     """
     model : pre-trained model 
     text: input text we want to predict the sentiment 
@@ -53,8 +56,9 @@ def prediction(model,text,tokenizer):
         s = scores[ranking[i]]
         print(f"{i+1}) {l} {np.round(float(s), 4)}")
 
-if __name__ == 'main':
+
+if __name__ == '__main__':
     print('Prediction')
-    model,tokenizer = model()
+    m, tokenizer, labels = model()
     text = 'good night !'
-    prediction = prediction(model,text,tokenizer)
+    p = prediction(m, text, tokenizer, labels)
