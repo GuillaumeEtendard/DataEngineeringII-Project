@@ -4,8 +4,6 @@ import numpy as np
 from scipy.special import softmax
 import csv
 import urllib.request
-import tensorflow as tf
-tf.config.experimental.list_physical_devices('GPU')
 
 
 def preprocess(text):
