@@ -255,3 +255,4 @@ npm-debug.log
 yarn-error.log
 cardiffnlp
 *.csv
+.idea/
