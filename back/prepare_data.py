@@ -21,17 +21,23 @@ def prepare(file,path_data,path_clean,cols):
     df_clean1 = df_clean[df_clean.sentiment != 'Irrelevant']
     df_clean2 = df_clean1.drop_duplicates(subset = ["ID"])
     # Equivalent distribution 9000 rows 
-    df0 = df_clean2[df_clean2.sentiment == 0].iloc[:3001][:]
-    dfpos = df_clean2[df_clean2.sentiment == 1].iloc[:3001][:]
-    dfneg = df_clean2[df_clean2.sentiment == -1].iloc[:3001][:]
+    df0_train = df_clean2[df_clean2.sentiment == 0].iloc[:1500][:]
+    df0_test = df_clean2[df_clean2.sentiment == 0].iloc[1500:3001][:]
+    dfpos_train = df_clean2[df_clean2.sentiment == 1].iloc[:1500][:]
+    dfpos_test = df_clean2[df_clean2.sentiment == 1].iloc[1500:3001][:]
+    dfneg_train = df_clean2[df_clean2.sentiment == -1].iloc[:1500][:]
+    dfneg_test = df_clean2[df_clean2.sentiment == -1].iloc[1500:3001][:]
     # Merge df 
-    merged_df = pd.concat([df0, dfpos,dfneg])
-    merged_df.to_csv(os.path.join(path_clean,'twitter_train_cleaned.csv'), index=False)
-    return merged_df
+    merged_df_train = pd.concat([df0_train, dfpos_train,dfneg_train])
+    merged_df_test = pd.concat([df0_test, dfpos_test,dfneg_test])
+
+    merged_df_train.to_csv(os.path.join(path_clean,'twitter_train_cleaned.csv'), index=False)
+    merged_df_test.to_csv(os.path.join(path_clean,'twitter_test_cleaned.csv'), index=False)
+    return merged_df_train,merged_df_test
 
 if __name__ =='__main__':
     root_data = '../data/raw/'
     PROCESSED_PATH = '../data/process'
     cols = ['ID','origin','sentiment','tweet']
     file = 'twitter_training.csv'
-    df_clean = prepare(file,root_data,PROCESSED_PATH,cols)
+    df_train, df_test = prepare(file,root_data,PROCESSED_PATH,cols)
