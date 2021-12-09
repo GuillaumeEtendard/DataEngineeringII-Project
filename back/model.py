@@ -1,6 +1,5 @@
 from transformers import AutoModelForSequenceClassification
 from transformers import AutoTokenizer
-import numpy as np
 from scipy.special import softmax
 import csv
 import urllib.request
@@ -23,7 +22,7 @@ def model():
     Loading the pre-trained model
     """
     task='sentiment'
-    MODEL = f"cardiffnlp/twitter-roberta-base-{'sentiment'}"
+    MODEL = f"cardiffnlp/twitter-roberta-base-{task}"
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
     labels = []
     mapping_link = f"https://raw.githubusercontent.com/cardiffnlp/tweeteval/main/datasets/{task}/mapping.txt"
@@ -32,7 +31,7 @@ def model():
         csvreader = csv.reader(html, delimiter='\t')
     labels = [row[1] for row in csvreader if len(row) > 1]
     model = AutoModelForSequenceClassification.from_pretrained(MODEL)
-    model.save_pretrained(MODEL)
+    model.save_pretrained(MODEL+'-model')
     return model, tokenizer, labels
 
 
@@ -47,12 +46,7 @@ def prediction(model, text, tokenizer, labels):
     output = model(**encoded_input)
     scores = output[0][0].detach().numpy()
     scores = softmax(scores)
-    ranking = np.argsort(scores)
-    ranking = ranking[::-1]
-    for i in range(scores.shape[0]):
-        l = labels[ranking[i]]
-        s = scores[ranking[i]]
-        print(f"{i+1}) {l} {np.round(float(s), 4)}")
+    return [-1, 0, 1], scores, labels
 
 
 if __name__ == '__main__':
@@ -60,3 +54,4 @@ if __name__ == '__main__':
     m, tokenizer, labels = model()
     text = 'good night !'
     p = prediction(m, text, tokenizer, labels)
+    print(p)
