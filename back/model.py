@@ -3,6 +3,7 @@ from transformers import AutoTokenizer
 from scipy.special import softmax
 import csv
 import urllib.request
+import numpy as np 
 
 
 def preprocess(text):
@@ -39,7 +40,7 @@ def prediction(model, text, tokenizer, labels):
     """
     model : pre-trained model 
     text: input text we want to predict the sentiment 
-    print : the score the sentiment analysis
+    return : the score the sentiment analysis
     """
     text = preprocess(text)
     encoded_input = tokenizer(text, return_tensors='pt')
@@ -48,6 +49,21 @@ def prediction(model, text, tokenizer, labels):
     scores = softmax(scores)
     return [-1, 0, 1], scores, labels
 
+def prediction_df(df,model,text_col,tokenizer,labels):
+    """
+    df : dataframe
+    model: pre-trained model
+    text_col: column containing the text to predict
+    return : the dataframe with a new column predict containing the prediction
+    """
+    def predict(text):
+        """
+        returns : the best score of the sentiment analysis 
+        """
+        p = prediction(m,text,tokenizer,labels)
+        return p[0][np.argmax(p[1])]
+    df['predict']= df[text_col].apply(predict)
+    return df 
 
 if __name__ == '__main__':
     print('Prediction')
