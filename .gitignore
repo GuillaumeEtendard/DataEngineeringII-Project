@@ -1,3 +1,6 @@
+mlruns/
+test_trainer/
+
 ### macOS ###
 # General
 .DS_Store
@@ -255,4 +258,5 @@ npm-debug.log
 yarn-error.log
 cardiffnlp
 *.csv
+*.tsv
 .idea/
