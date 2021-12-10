@@ -3,7 +3,7 @@ from transformers import AutoTokenizer
 from scipy.special import softmax
 import csv
 import urllib.request
-import numpy as np 
+import numpy as np
 
 
 def preprocess(text):
@@ -22,7 +22,7 @@ def model():
     """
     Loading the pre-trained model
     """
-    task='sentiment'
+    task = 'sentiment'
     MODEL = f"cardiffnlp/twitter-roberta-base-{task}"
     tokenizer = AutoTokenizer.from_pretrained(MODEL)
     labels = []
@@ -49,22 +49,26 @@ def prediction(model, text, tokenizer, labels):
     scores = softmax(scores)
     return [-1, 0, 1], scores, labels
 
-def predict(m,text,tokenizer,labels):
-        """
-        returns : the best score of the sentiment analysis 
-        """
-        p = prediction(m,text,tokenizer,labels)
-        return p[0][np.argmax(p[1])]
 
-def prediction_df(df,model,text_col,tokenizer,labels):
+def predict(m, text, tokenizer, labels):
+    """
+    returns : the best score of the sentiment analysis 
+    """
+    p = prediction(m, text, tokenizer, labels)
+    return p[0][np.argmax(p[1])]
+
+
+def prediction_df(df, model, text_col, tokenizer, labels):
     """
     df : dataframe
     model: pre-trained model
     text_col: column containing the text to predict
     return : the dataframe with a new column predict containing the prediction
     """
-    df['predict']= df[text_col].apply(lambda text: predict(model,text,tokenizer,labels))
-    return df 
+    df['predict'] = df[text_col].apply(
+        lambda text: predict(model, text, tokenizer, labels))
+    return df
+
 
 if __name__ == '__main__':
     print('Prediction')
