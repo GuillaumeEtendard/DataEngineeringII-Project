@@ -50,7 +50,7 @@ def prediction(model, text, tokenizer, labels):
     return [-1, 0, 1], scores, labels
 
 
-def predict(m, text, tokenizer, labels):
+def get_model_prediction(m, text, tokenizer, labels):
     """
     returns : the best score of the sentiment analysis 
     """
@@ -66,13 +66,18 @@ def prediction_df(df, model, text_col, tokenizer, labels):
     return : the dataframe with a new column predict containing the prediction
     """
     df['predict'] = df[text_col].apply(
-        lambda text: predict(model, text, tokenizer, labels))
+        lambda text: get_model_prediction(model, text, tokenizer, labels))
     return df
+
+
+def predict_text(text):
+    m, tokenizer, labels = model()
+    p = prediction(m, text, tokenizer, labels)
+    return p[2][np.argmax(p[1])]
 
 
 if __name__ == '__main__':
     print('Prediction')
-    m, tokenizer, labels = model()
     text = 'good night !'
-    p = prediction(m, text, tokenizer, labels)
+    p = predict_text(text)
     print(p)
