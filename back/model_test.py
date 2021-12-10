@@ -1,4 +1,4 @@
-from model import preprocess, prediction, model,prediction_df
+from model import preprocess, prediction, model,prediction_df,predict
 import pandas as pd
 import numpy as np
 from sklearn.metrics import classification_report

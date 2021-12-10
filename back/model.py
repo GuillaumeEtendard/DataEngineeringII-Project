@@ -49,6 +49,13 @@ def prediction(model, text, tokenizer, labels):
     scores = softmax(scores)
     return [-1, 0, 1], scores, labels
 
+def predict(m,text,tokenizer,labels):
+        """
+        returns : the best score of the sentiment analysis 
+        """
+        p = prediction(m,text,tokenizer,labels)
+        return p[0][np.argmax(p[1])]
+
 def prediction_df(df,model,text_col,tokenizer,labels):
     """
     df : dataframe
@@ -56,13 +63,7 @@ def prediction_df(df,model,text_col,tokenizer,labels):
     text_col: column containing the text to predict
     return : the dataframe with a new column predict containing the prediction
     """
-    def predict(text):
-        """
-        returns : the best score of the sentiment analysis 
-        """
-        p = prediction(m,text,tokenizer,labels)
-        return p[0][np.argmax(p[1])]
-    df['predict']= df[text_col].apply(predict)
+    df['predict']= df[text_col].apply(lambda text: predict(model,text,tokenizer,labels))
     return df 
 
 if __name__ == '__main__':
