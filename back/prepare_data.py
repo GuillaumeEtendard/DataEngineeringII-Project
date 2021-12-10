@@ -2,7 +2,7 @@ import os
 import pandas as pd
 pd.options.mode.chained_assignment = None  
 
-def prepare(file,path_data,path_clean,cols):
+def prepare(file,path_data,path_clean):
     """
     file : csv file containing the dataset 
     path_data : path of the dataset 
@@ -33,6 +33,5 @@ def prepare(file,path_data,path_clean,cols):
 if __name__ =='__main__':
     root_data = '../data/raw/'
     PROCESSED_PATH = '../data/process'
-    cols = ['ID','origin','sentiment','tweet']
     file = 'train.tsv'
-    df_train = prepare(file,root_data,PROCESSED_PATH,cols)
+    df_train = prepare(file,root_data,PROCESSED_PATH)
