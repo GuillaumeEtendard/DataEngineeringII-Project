@@ -10,34 +10,29 @@ def prepare(file,path_data,path_clean,cols):
     cols : names of the columns 
     Returns : the clean dataset 
     """
-    # Read dataframe 
-    df = pd.read_csv(os.path.join(path_data,file),names= cols)
-    df_clean = df.copy()
+    # Read Data
+    df_tw = pd.read_csv(os.path.join(root_data,file),sep='\t')
+    df_tw['sentiment'] = df_tw['Sentiment']
+    df_tw['text'] = df_tw['Phrase']
+    df_tw = df_tw.drop(columns=['Sentiment', 'Phrase', 'SentenceId', 'PhraseId'])
     # Change labels 
-    df_clean.sentiment[df_clean.sentiment == 'Positive'] = 1 
-    df_clean.sentiment[df_clean.sentiment == 'Negative'] = -1 
-    df_clean.sentiment[df_clean.sentiment == 'Neutral'] = 0
-    # Drop useless label & duplicates rows 
-    df_clean1 = df_clean[df_clean.sentiment != 'Irrelevant']
-    df_clean2 = df_clean1.drop_duplicates(subset = ["ID"])
-    # Equivalent distribution 9000 rows 
-    df0_train = df_clean2[df_clean2.sentiment == 0].iloc[:1500][:]
-    df0_test = df_clean2[df_clean2.sentiment == 0].iloc[1500:3001][:]
-    dfpos_train = df_clean2[df_clean2.sentiment == 1].iloc[:1500][:]
-    dfpos_test = df_clean2[df_clean2.sentiment == 1].iloc[1500:3001][:]
-    dfneg_train = df_clean2[df_clean2.sentiment == -1].iloc[:1500][:]
-    dfneg_test = df_clean2[df_clean2.sentiment == -1].iloc[1500:3001][:]
-    # Merge df 
+    df_tw = df_tw[(df_tw.sentiment != 3) & (df_tw.sentiment != 1)]
+    df_tw.sentiment[df_tw.sentiment == 4] = 1 
+    df_tw.sentiment[df_tw.sentiment == 0] = -1 
+    df_tw.sentiment[df_tw.sentiment == 2] = 0
+    df_tw['sentiment'] = df_tw['sentiment'].astype('int64')
+    # Select a subset of data
+    df0_train = df_tw[df_tw.sentiment == 0].iloc[:200][:]
+    dfpos_train = df_tw[df_tw.sentiment == 1].iloc[:200][:]
+    dfneg_train = df_tw[df_tw.sentiment == -1].iloc[:200][:]
+    # Merge dataframe
     merged_df_train = pd.concat([df0_train, dfpos_train,dfneg_train])
-    merged_df_test = pd.concat([df0_test, dfpos_test,dfneg_test])
-
-    merged_df_train.to_csv(os.path.join(path_clean,'twitter_train_cleaned.csv'), index=False)
-    merged_df_test.to_csv(os.path.join(path_clean,'twitter_test_cleaned.csv'), index=False)
-    return merged_df_train,merged_df_test
+    merged_df_train.to_csv(os.path.join(PROCESSED_PATH,'data_cleaned.csv'), index=False)
+    return merged_df_train
 
 if __name__ =='__main__':
     root_data = '../data/raw/'
     PROCESSED_PATH = '../data/process'
     cols = ['ID','origin','sentiment','tweet']
-    file = 'twitter_training.csv'
-    df_train, df_test = prepare(file,root_data,PROCESSED_PATH,cols)
+    file = 'train.tsv'
+    df_train = prepare(file,root_data,PROCESSED_PATH,cols)
