@@ -1,10 +1,10 @@
-from model import model, prediction_df
+from model import load_model, prediction_df
 import pandas as pd
 from sklearn.metrics import accuracy_score
 import unittest
 
 df = pd.read_csv('../data/process/data_cleaned.csv')
-m, tokenizer, labels = model()
+m, tokenizer, labels = load_model()
 
 
 class Test(unittest.TestCase):

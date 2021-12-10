@@ -58,17 +58,15 @@ export default {
     return {
       message,
       result,
-      submitting
+      submitting,
     };
   },
   methods: {
     async submit() {
-      this.result = ''
+      this.result = "";
       this.submitting = true;
-      const response = await axios.get("http://localhost:8000/get_sentiment", {
-        params: {
-          text: this.message,
-        },
+      const response = await axios.post("http://localhost:8000/get_sentiment", {
+        text: this.message,
       });
       this.result = response.data.message;
       this.submitting = false;

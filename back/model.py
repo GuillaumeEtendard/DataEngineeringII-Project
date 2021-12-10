@@ -18,7 +18,7 @@ def preprocess(text):
     return " ".join(new_text)
 
 
-def model():
+def load_model():
     """
     Loading the pre-trained model
     """
@@ -70,8 +70,7 @@ def prediction_df(df, model, text_col, tokenizer, labels):
     return df
 
 
-def predict_text(text):
-    m, tokenizer, labels = model()
+def predict_text(m, text, tokenizer, labels):
     p = prediction(m, text, tokenizer, labels)
     return p[2][np.argmax(p[1])]
 
