@@ -1,7 +1,8 @@
 from typing import Optional
 from fastapi import FastAPI
-from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from model import predict_text, load_model
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -14,20 +15,28 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class Item(BaseModel):
-    name:str
-    price: float
-    is_offer : Optional[bool] = None
+items = {}
+
+
+class PredictionData(BaseModel):
+    text: str
+
+
+@app.on_event("startup")
+async def startup_event():
+    model, tokenizer, labels = load_model()
+    items["model"] = model
+    items["tokenizer"] = tokenizer
+    items["labels"] = labels
+
 
 @app.get("/")
 def read_root():
-    return {"message":"Hello World"}
+    return {"message": "Hello World"}
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q : Optional[str]=None):
-    return {"item_id":item_id,"q":q}
 
-@app.put("/items/{item_id}")
-def update_item(item_id : int, item : Item):
-    return {"item_name": item.name, "item_id":item_id}
-
+@app.post("/get_sentiment/")
+async def prediction(data: PredictionData):
+    p = predict_text(items['model'], data.text,
+                     items['tokenizer'], items['labels'])
+    return {"message": p}

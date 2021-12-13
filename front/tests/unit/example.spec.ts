@@ -20,6 +20,6 @@ describe('Sentiment.vue', () => {
     wrapper.find('button').trigger('click')
     await sleep(1000)
     await flushPromises()
-    expect(wrapper.find('#result').text()).toMatch(/\b(?:Hello World|abc|def)\b/g)
+    expect(wrapper.find('#result').text()).toMatch(/\b(?:positive|negative|neutral)\b/g)
   })
 })

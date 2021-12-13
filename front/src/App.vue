@@ -1,18 +1,20 @@
 <template>
-  <h1>Data Engineering Project</h1>
-  <p>developed by Guillaume Etendard, Camille Omnes and Tom Tea</p>
-  <Sentiment />
+  <div>
+    <h1>Data Engineering Project</h1>
+    <p>developed by Guillaume Etendard, Camille Omnes and Tom Tea</p>
+    <Sentiment />
+  </div>
 </template>
 
 <script>
-import Sentiment from './components/Sentiment.vue'
+import Sentiment from "./components/Sentiment.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    Sentiment
-  }
-}
+    Sentiment,
+  },
+};
 </script>
 
 <style>
